@@ -3,24 +3,19 @@ package com.example.hscroll;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
-import android.widget.Scroller;
 
 public class MainActivity extends Activity {
 
 	private static final String TAG = "hscroll";
-	private int viewPosition;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
