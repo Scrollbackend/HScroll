@@ -1,6 +1,7 @@
 package com.example.hscroll;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,24 +11,59 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
+	//Set up singleton mode to allow HSV use method in this activity
+	private static MainActivity INSTANCE = null;
 
+	
 	private static final String TAG = "hscroll";
+	private MyAdapter myAdapter;
+	private ArrayList<Integer> scrollXList;
+	private ListView listView;
+	private int mFirstVisiblePosition;
+	private int mLastVisiblePosition;
+	//Remember to use Integer instead of int to avoid Arrays.asList.contains return wrong result.
+	private Integer[] mVisiblePosition;
+//	private Singleton singleton =Singleton.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		ListView listView = (ListView) findViewById(R.id.listview_main);
-		listView.setAdapter(new mAdapter());
-
+		listView = (ListView) findViewById(R.id.listview_main);
+		INSTANCE = this;
+		myAdapter = new MyAdapter();
+		listView.setAdapter(myAdapter);
+		
+		
+		
 	}
-
+	public static MainActivity getInstance(){
+		return INSTANCE;
+	}
+	public void setScrollX(int position, int scrollX) {
+		mFirstVisiblePosition=listView.getFirstVisiblePosition();
+		mLastVisiblePosition=listView.getLastVisiblePosition();
+		myAdapter.calVisiblePositions(mFirstVisiblePosition,mLastVisiblePosition);
+		Log.i(TAG, "getFirst"+listView.getFirstVisiblePosition()+"getLast"+listView.getLastVisiblePosition());
+		Log.i(TAG, "MsetScrollX");
+		Log.i(TAG, "P"+position+" contain"+Arrays.toString(mVisiblePosition));
+		if(Arrays.asList(mVisiblePosition).contains(position)){
+		scrollXList.set(position+1, scrollX);
+		Log.i(TAG, "MSetS");
+		
+		}
+//		Integer[] test = new Integer[]{1,2,3,4,5,6};
+//		int test1= 3;
+//		Log.i(TAG, "Test"+Arrays.asList(test).contains(test1));
+		
+	}
 	class ViewHolder {
-		public HorizontalScrollView hsv;
+		public com.example.hscroll.HSV hsv;
+		public LinearLayout	 hll;
 		public Button btn1;
 		public Button btn2;
 		public Button btn3;
@@ -35,17 +71,24 @@ public class MainActivity extends Activity {
 		public Button btn5;
 		public Button btn6;
 	}
+	
 
-	public class mAdapter extends BaseAdapter {
-		// View[] itemViews;
-		private View[] itemViews = new View[30];
+	public class MyAdapter extends BaseAdapter {
+		private View[] itemViews = new View[100];
+		private int itemViewsLength = itemViews.length;
+		public int getItemViewsLength() {
+			return itemViewsLength;
+		}
 
-		// ArrayList<HashMap<String, integer>> scrollXList;
-		ArrayList<Integer> scrollXList;
+		private Button[] buttonViews = new Button[6];
+		private LinearLayout hsvLinear;
+//		Singleton singleton = Singleton.getInstance();
 
-		public mAdapter() {
-			// itemViews = new View[30];
+		
+
+		public MyAdapter() {
 			iniScrollXList();
+//			buttonsInit();
 		}
 
 		@Override
@@ -66,33 +109,47 @@ public class MainActivity extends Activity {
 			return position;
 		}
 
-		/*
-		 * public ArrayList<HashMap<String, integer>> iniScrollXList() {
-		 * scrollXList = new ArrayList<HashMap<String,integer>>(); for (int i=0;
-		 * i<itemViews.length;i++){ HashMap<String, integer> map = new
-		 * HashMap<String, integer>(); map.put("Row"+i, null);
-		 * scrollXList.add(map); } return scrollXList; }
-		 */
 
 		public ArrayList<Integer> iniScrollXList() {
 			scrollXList = new ArrayList<Integer>();
-			for (int i = 0; i < itemViews.length; i++) {
+			for (int i = 0; i < itemViews.length+1; i++) {
 
 				scrollXList.add(0);
 			}
 			return scrollXList;
 		}
 
-		public void setScrollX(int position, int scrollX) {
-
-			scrollXList.set(position, scrollX);
-		}
+		
 
 		public int getScrollX(int position) {
-			int scrollX = scrollXList.get(position);
-
+			int scrollX = scrollXList.get(position+1);
 			return scrollX;
 		}
+		
+		public void calVisiblePositions (int firstP, int lastP){
+			int count = lastP-firstP+1;
+			Log.i(TAG, "cal.count"+count);
+			Integer[] positions= new Integer[count];
+			for (int i= 0; i<count;i++){
+				positions[i]=firstP;
+				firstP++;
+			}
+			mVisiblePosition=positions;
+//			Log.i(TAG, "Contain"+Arrays.asList(positions).contains(firstP));
+		}
+		/*public void buttonsInit (){
+			hsvLinear = (LinearLayout)findViewById(R.id.hlinear);
+			for (int i=0; i<buttonViews.length;i++){
+//				Button buttonView = (Button)findViewById(R.id.btnview_btn);
+				TextView buttonView = new TextView(getApplicationContext());
+				buttonView.setText(""+(i+1));
+				hsvLinear.addView(buttonView);
+			}
+			for (int i=0; i<buttonViews.length;i++){
+				Button buttonView = (Button)findViewById(R.id.btnview_btn);
+				hsvLinear.addView(buttonView);
+			}
+		}*/
 
 		//get the getLeft value that relative to the root view
 		//http://stackoverflow.com/questions/3619693/getting-views-coordinates-relative-to-the-root-layout
@@ -123,7 +180,7 @@ public class MainActivity extends Activity {
 				convertView = getLayoutInflater().inflate(R.layout.hsview,
 						parent, false);
 
-				viewHolder.hsv = (HorizontalScrollView) convertView
+				viewHolder.hsv = (com.example.hscroll.HSV) convertView
 						.findViewById(R.id.hsview);
 				viewHolder.btn1 = (Button) convertView
 						.findViewById(R.id.button_m1);
@@ -137,6 +194,7 @@ public class MainActivity extends Activity {
 						.findViewById(R.id.button_p1);
 				viewHolder.btn6 = (Button) convertView
 						.findViewById(R.id.button_p2);
+				viewHolder.hll = (LinearLayout) convertView.findViewById(R.id.hlinear);
 
 				// if assign the position as ID to the HorizontalScrollView in
 				// "if", the ID in Tag confirm that the view is
@@ -156,17 +214,23 @@ public class MainActivity extends Activity {
 
 				// this tag the convertView created here for reusing.
 				convertView.setTag(viewHolder);
-			} else
+			} else{
 				// reuse created view
 				viewHolder = (ViewHolder) convertView.getTag();
+//				after recycle a view, reset the position value in HSV.
+				viewHolder.hsv.setPosition(-1);}
 
 			// The viewHolder and sub view in viewHolder shared the scroll value
 			// The scrollTo set here will ensure the initial scroll value to
 			// 0,0, when reused the scroll value will change accordingly
 			// convertView.scrollTo(300, 0);
-
+//			mFirstVisiblePosition=listView.getFirstVisiblePosition();
+//			mLastVisiblePosition=listView.getLastVisiblePosition();
+//			calVisiblePositions(mFirstVisiblePosition,mLastVisiblePosition);
+//			Log.i(TAG, "getFirst"+listView.getFirstVisiblePosition()+"getLast"+listView.getLastVisiblePosition());
+			Log.i(TAG, "Array"+Arrays.asList(scrollXList).toString());
 			convertView.scrollTo(getScrollX(position), 0);
-			Log.i(TAG, "scrollTo" + getScrollX(position) + "P" + position);
+			Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" + position);
 
 			// set OnTouchListener to obtain the scrollX value
 			convertView.setOnTouchListener(new View.OnTouchListener() {
@@ -174,14 +238,40 @@ public class MainActivity extends Activity {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					// TODO Auto-generated method stub
-					final int scrollX;
+					Log.i(TAG, "onTouch");
+					
+//					final int scrollX;
 
 					// get viewHolder
 					ViewHolder touchedViewHolder = (ViewHolder) v.getTag();
 					// Reassign touch event to HorizontalScrollView's
-					// onTouchEvent, in order to scroll
+//					 onTouchEvent, in order to scroll, if the onTouch set to true ???try pass to different container(not working)
+					touchedViewHolder.hsv.setPosition(position);
+					Log.i(TAG, "TouchArray"+Arrays.asList(scrollXList).toString());
 					touchedViewHolder.hsv.onTouchEvent(event);
-					scrollX = (int) touchedViewHolder.hsv.getScrollX();
+					
+					
+//					Log.i(TAG, "MSetP"+position+" getFirstVisiblePosition"+listView.getFirstVisiblePosition());
+					// TODO Scroller might work
+					
+/*//					not working
+ * 
+					Scroller mScroller3 = new Scroller(touchedViewHolder.hll.getContext());
+					HorizontalScrollView viewTest1 = (HorizontalScrollView) findViewById(R.id.hsview);
+					Scroller mScroller2 = new Scroller(viewTest1.getContext());*/
+				/*	Scroller mScroller = new Scroller(touchedViewHolder.hsv.getContext());
+					Log.i(TAG,
+							"getFinalX" + mScroller.getFinalX()
+									+ "|"+mScroller.getCurrX());*/
+					
+					
+					/*Scroller mScroller = new Scroller(getApplicationContext());
+					if (!mScroller.computeScrollOffset())
+					setScrollX(position, viewHolder.hsv.getHSVScrollLeft());
+					Log.i(TAG, "setScrollX"+viewHolder.hsv.getHSVScrollLeft()+" P"+position);*/
+					
+//					scrollX = (int) touchedViewHolder.hsv.getHSVScrollLeft();
+//					Log.i(TAG, "LEFT"+touchedViewHolder.hsv.getHSVScrollLeft());
 					// this is fine
 					// scrollX = (int) v.getScrollX();
 
@@ -197,7 +287,12 @@ public class MainActivity extends Activity {
 					 * break; default: break; }
 					 */
 
-/*					// TODO Scroller might work
+					
+					
+					
+					
+					
+					/*// TODO Scroller might work
 					Scroller mScroller = new Scroller(getApplicationContext());
 					Log.i(TAG,
 							"getFinalX" + mScroller.getFinalX()
@@ -210,16 +305,15 @@ public class MainActivity extends Activity {
 					touchedViewHolder.btn1.getLocationInWindow(location2);
 					Log.i(TAG, "getLocationOnScreen" + location1[0]+"	getLocationInWindow"+location2[0]);*/
 
-					Log.i(TAG, "btn1ScrollX"+touchedViewHolder.btn1.getScrollX());
+//					Log.i(TAG, "btn1ScrollX"+touchedViewHolder.btn1.getScrollX());
 					
-					
-					setScrollX(position, scrollX);
+//					setScrollX(position, scrollX);
 
-					Log.i(TAG, "Row" + position + "ScrollX"
+/*					Log.i(TAG, "Row" + position + "ScrollX"
 							+ touchedViewHolder.hsv.getScrollX() + "&"
-							+ scrollX + "&" + getScrollX(position));
+							+ scrollX + "&" + getScrollX(position));*/
 					// return true;
-					return false;
+					return true;
 				}
 			});
 
@@ -227,10 +321,10 @@ public class MainActivity extends Activity {
 			String viewID = viewHolder.hsv.getTag().toString()
 					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
 			viewHolder.btn3.setText("R" + position + " V" + viewID);
-			Log.i(TAG, " position " + position + " viewID " + viewID
+			/*Log.i(TAG, " position " + position + " viewID " + viewID
 					+ " ScrollX " + viewHolder.hsv.getScrollX() + "+"
 					+ convertView.getScrollX());
-			Log.i(TAG, "convertViewID" + viewID);
+			Log.i(TAG, "convertViewID" + viewID);*/
 			// Debug end
 
 			return convertView;

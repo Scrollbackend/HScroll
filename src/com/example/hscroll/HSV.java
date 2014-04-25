@@ -50,7 +50,7 @@ public class HSV extends HorizontalScrollView {
 //		 if (l!=0)
 		mainActivity.setScrollX(position, l);
 		// flag=false;
-		Log.i(TAG, "l:" + l  +" ol"+oldl+" P:" + position+"tag"+this.getTag().toString());
+		Log.i(TAG, "l:" + l  +" ol"+oldl+" P:" + position);
 	}
 
 }
