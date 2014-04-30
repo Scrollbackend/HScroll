@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -39,13 +42,14 @@ public class MainActivity extends Activity {
 		listView.setAdapter(myAdapter);
 
 	}
-
+//public method enable other to call, singleton mode
 	public static MainActivity getInstance() {
 		return INSTANCE;
 	}
 
+	// **********TC1***************
 	public void setScrollX(int position, int scrollX) {
-//		this create a list of current visible view's position
+		// this create a list of current visible view's position
 		mFirstVisiblePosition = listView.getFirstVisiblePosition();
 		mLastVisiblePosition = listView.getLastVisiblePosition();
 		myAdapter.calVisiblePositions(mFirstVisiblePosition,
@@ -55,8 +59,8 @@ public class MainActivity extends Activity {
 		// Log.i(TAG, "MsetScrollX");
 		// Log.i(TAG,
 		// "P"+position+" contain"+Arrays.toString(mVisiblePosition));
-		
-//		ensure the scrollX value of the position is not invisible
+
+		// ensure the scrollX value of the position is not invisible
 		if (Arrays.asList(mVisiblePosition).contains(position)) {
 			scrollXList.set(position + 1, scrollX);
 			// Log.i(TAG, "MSetS");
@@ -123,6 +127,7 @@ public class MainActivity extends Activity {
 			int count = lastP - firstP + 1;
 			// Log.i(TAG, "cal.count"+count);
 			Integer[] positions = new Integer[count];
+//			a list from firstVisiblePosition to the lastVisiblePosition
 			for (int i = 0; i < count; i++) {
 				positions[i] = firstP;
 				firstP++;
@@ -170,7 +175,7 @@ public class MainActivity extends Activity {
 			// When the view is recycled, the state of the view will be
 			// preserved, as the view is reused, the previous state will be
 			// restored.
-			// Log.i(TAG, "Array"+Arrays.asList(scrollXList).toString());
+			Log.i(TAG, "Array" + Arrays.asList(scrollXList).toString());
 			convertView.scrollTo(getScrollX(position), 0);
 			// Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" +
 			// position);
@@ -185,11 +190,13 @@ public class MainActivity extends Activity {
 
 					// get viewHolder
 					ViewHolder touchedViewHolder = (ViewHolder) v.getTag();
+
+					// **********TC2***************
 					// Pass the position which user is interact with, in order
 					// to store to correct position in ArrayList
 					touchedViewHolder.hsv.setPosition(position);
-					// Log.i(TAG,
-					// "TouchArray"+Arrays.asList(scrollXList).toString());
+					Log.i(TAG, "TouchArray"
+							+ Arrays.asList(scrollXList).toString());
 					// Reassign touch event to HorizontalScrollView's
 					// onTouchEvent, in order to scroll, if the onTouch set to
 					// true ???try pass to different container(not working)
@@ -207,9 +214,9 @@ public class MainActivity extends Activity {
 			});
 
 			// Debug
-			// String viewID = viewHolder.hsv.getTag().toString()
-			// .replace("com.example.hscroll.MainActivity$ViewHolder", "");
-			// viewHolder.btn3.setText("R" + position + " V" + viewID);
+			String viewID = viewHolder.hsv.getTag().toString()
+					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
+			viewHolder.btn3.setText("R" + position + " V" + viewID);
 			// Log.i(TAG, " position " + position + " viewID " + viewID
 			// + " ScrollX " + viewHolder.hsv.getScrollX() + "+"
 			// + convertView.getScrollX());
@@ -219,6 +226,53 @@ public class MainActivity extends Activity {
 			return convertView;
 		}
 
+	}
+
+}
+
+// There will be as many object as the system needs when convertView is created
+// the first time, the position need to be pass here then feed back to take
+// advantage of multiple HSV object, therefore when scroll multiple rows the
+// scrollX will store correctly.
+class HSV extends HorizontalScrollView {
+	private static final String TAG = "hscroll";
+	private MainActivity mainActivity = MainActivity.getInstance();
+
+	private int position;
+
+	// **********TC2***************
+	public void setPosition(int position) {
+		this.position = position;
+		// Log.i(TAG, "HSVSetP" + position);
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public HSV(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+	}
+
+	public HSV(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		// TODO Auto-generated constructor stub
+	}
+
+	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+		super.onScrollChanged(l, t, oldl, oldt);
+		// The position is passed to here when the onTouch is triggered,
+		// however,
+		// when the new HSV is inflated (recycled) the onScrollChanged method is
+		// called.
+		// The "position" value is not changed, but the new view's left is zero.
+		// So the new view's left value and the "old position" accidently set to
+		// the arraylist.
+
+		// **********TC1***************
+		mainActivity.setScrollX(position, l);
+		// Log.i(TAG, "l:" + l +" ol"+oldl+" P:" + position);
 	}
 
 }
