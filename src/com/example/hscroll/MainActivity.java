@@ -532,8 +532,12 @@ class HSV extends HorizontalScrollView {
 			int refBoundary = locationRef[0];
 			// Log.i(TAG, "Boundary Ref" + refBoundary);
 			// Log.i(TAG, "Lower-Ref"+(lowerBoundary-refBoundary));
-			// TODO set up bouncy scrollto, how can I sure it is final scroll
-			if (0 >= lowerBoundary && 0 < upperBoundary) {
+			int lowerWidth=mainActivity.touchedViewHolder.hll.getChildAt(i).getWidth();
+			int upperWidth=mainActivity.touchedViewHolder.hll.getChildAt(i+1).getWidth();
+			//			Log.i(TAG, "i "+i);
+//			if (0 >= lowerBoundary && 0 < upperBoundary)
+			if (0>=lowerBoundary&&0<(lowerBoundary+(lowerWidth/2)))
+			{
 				// Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
 				// refBoundary)
 				// + " Upper Boundary " + (upperBoundary - refBoundary));
@@ -542,6 +546,13 @@ class HSV extends HorizontalScrollView {
 
 				// mainActivity.touchedViewHolder.hll.scrollTo(lowerBoundary-refBoundary,
 				// t);
+				break;
+			}
+			if(0>=(lowerBoundary+(lowerWidth/2))&&0<(upperBoundary+(lowerWidth/2))) 
+			{
+				mainActivity
+				.setBoundaryX(position, upperBoundary - refBoundary);
+				break;
 			}
 		}
 		// Log.i(TAG, mainActivity.)
