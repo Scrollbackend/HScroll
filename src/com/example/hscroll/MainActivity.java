@@ -89,12 +89,12 @@ public class MainActivity extends Activity {
 	class ViewHolder {
 		public com.example.hscroll.HSV hsv;
 		public LinearLayout hll;
-		public Button btn1;
-		public Button btn2;
-		public Button btn3;
-		public Button btn4;
-		public Button btn5;
-		public Button btn6;
+//		public Button btn1;
+//		public Button btn2;
+//		public Button btn3;
+//		public Button btn4;
+//		public Button btn5;
+//		public Button btn6;
 	}
 
 	public class MyAdapter extends BaseAdapter {
@@ -191,18 +191,18 @@ public class MainActivity extends Activity {
 
 				viewHolder.hsv = (com.example.hscroll.HSV) convertView
 						.findViewById(R.id.hsview);
-				viewHolder.btn1 = (Button) convertView
-						.findViewById(R.id.button_m1);
-				viewHolder.btn2 = (Button) convertView
-						.findViewById(R.id.button_1);
-				viewHolder.btn3 = (Button) convertView
-						.findViewById(R.id.button_3);
-				viewHolder.btn4 = (Button) convertView
-						.findViewById(R.id.button_2);
-				viewHolder.btn5 = (Button) convertView
-						.findViewById(R.id.button_p1);
-				viewHolder.btn6 = (Button) convertView
-						.findViewById(R.id.button_p2);
+//				viewHolder.btn1 = (Button) convertView
+//						.findViewById(R.id.button_m1);
+//				viewHolder.btn2 = (Button) convertView
+//						.findViewById(R.id.button_1);
+//				viewHolder.btn3 = (Button) convertView
+//						.findViewById(R.id.button_3);
+//				viewHolder.btn4 = (Button) convertView
+//						.findViewById(R.id.button_2);
+//				viewHolder.btn5 = (Button) convertView
+//						.findViewById(R.id.button_p1);
+//				viewHolder.btn6 = (Button) convertView
+//						.findViewById(R.id.button_p2);
 				viewHolder.hll = (LinearLayout) convertView
 						.findViewById(R.id.hlinear);
 				// this tag the convertView created here for reusing.
@@ -285,17 +285,23 @@ public class MainActivity extends Activity {
 					// Reassign touch event to HorizontalScrollView's
 					// onTouchEvent, in order to scroll, if the onTouch set to
 					// true ???try pass to different container(not working)
-					if (event.getAction() == MotionEvent.ACTION_UP) {
-						new getFinalXTask().execute(position);
-						Log.i(TAG,
-								"onTouchViewHolder"
-										+ touchedViewHolder.hsv
-												.getTag()
-												.toString()
-												.replace(
-														"com.example.hscroll.MainActivity$ViewHolder",
-														""));
-					}
+					
+					
+//					TODO comment th following if to simplify debug while trying dynamic adding
+//					if (event.getAction() == MotionEvent.ACTION_UP) {
+//						new getFinalXTask().execute(position);
+//						Log.i(TAG,
+//								"onTouchViewHolder"
+//										+ touchedViewHolder.hsv
+//												.getTag()
+//												.toString()
+//												.replace(
+//														"com.example.hscroll.MainActivity$ViewHolder",
+//														""));
+//					}
+					
+					
+					
 					touchedViewHolder.hsv.onTouchEvent(event);
 
 					// the getLocationOnScreen can provide absolute top-left
@@ -332,9 +338,9 @@ public class MainActivity extends Activity {
 			});
 
 			// Debug
-			String viewID = viewHolder.hsv.getTag().toString()
-					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
-			viewHolder.btn3.setText("R" + position + " V" + viewID);
+//			String viewID = viewHolder.hsv.getTag().toString()
+//					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
+//			viewHolder.btn3.setText("R" + position + " V" + viewID);
 			// Log.i(TAG, " position " + position + " viewID " + viewID
 			// + " ScrollX " + viewHolder.hsv.getScrollX() + "+"
 			// + convertView.getScrollX());
