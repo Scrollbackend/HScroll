@@ -224,6 +224,18 @@ public class MainActivity extends Activity {
 				// setBoundaryX(5, location1[0]);
 				// Log.i(TAG, "BoundaryList"
 				// + Arrays.asList(BoundaryList).toString());
+				
+				for (int i=0; i<innerItemViews.length;i++){
+					Button button = new Button(getApplicationContext());
+					button.setText("This is a Button "+i);
+				viewHolder.hll.addView(button);
+				}
+				for (int i=0; i<innerItemViews.length;i++){
+					Button button = new Button(getApplicationContext());
+					button.setText("This is a Button "+i);
+				viewHolder.hll.addView(button);
+				}
+				
 
 			} else {
 				// reuse created view
@@ -287,7 +299,7 @@ public class MainActivity extends Activity {
 					// true ???try pass to different container(not working)
 					
 					
-//					TODO comment th following if to simplify debug while trying dynamic adding
+//					TODO comment the following if to simplify debug while trying dynamic adding
 //					if (event.getAction() == MotionEvent.ACTION_UP) {
 //						new getFinalXTask().execute(position);
 //						Log.i(TAG,
@@ -298,6 +310,16 @@ public class MainActivity extends Activity {
 //												.replace(
 //														"com.example.hscroll.MainActivity$ViewHolder",
 //														""));
+//					}
+					
+//					switch (event.getAction()) {
+//					case MotionEvent.ACTION_MOVE:
+//						
+//						break;
+//
+////					case MotionEvent.ACTION_UP:
+////						new getFinalXTask().execute(position);
+////						break;
 //					}
 					
 					
@@ -521,6 +543,7 @@ class HSV extends HorizontalScrollView {
 		// childCount -1 or will exceed, remember the last digit of i never
 		// reach in for loop.
 		for (int i = 0; i < childCount - 1; i++) {
+//			TODO separate the getLocationOnScreen method, return a int
 			int[] locationLow = new int[2];
 			int[] locationUpper = new int[2];
 			int[] locationRef = new int[2];
@@ -541,6 +564,21 @@ class HSV extends HorizontalScrollView {
 			int lowerWidth=mainActivity.touchedViewHolder.hll.getChildAt(i).getWidth();
 			int upperWidth=mainActivity.touchedViewHolder.hll.getChildAt(i+1).getWidth();
 			//			Log.i(TAG, "i "+i);
+			
+			int[] lastChildLoc=new int[2];
+			mainActivity.touchedViewHolder.hll.getChildAt(childCount-1).getLocationOnScreen(lastChildLoc);
+//			int[] midChildLoc = new int[2];
+//			mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getLocationOnScreen(midChildLoc);
+//			int midChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getWidth();
+//			int theline = lastChildLoc[0]-mainActivity.touchedViewHolder.hsv.getWidth();
+//			if (l>=theline)mainActivity.touchedViewHolder.hll.scrollBy(-(midChildLoc[0]+midChildWidth), 0);
+//			Log.i(TAG, "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
+			int lastChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
+			int HSVWidth = mainActivity.touchedViewHolder.hll.getWidth();
+			Log.i(TAG, "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
+//			if(l>=1000)mainActivity.touchedViewHolder.hll.scrollBy(-500, 0);
+			
+			
 //			if (0 >= lowerBoundary && 0 < upperBoundary)
 			if (0>=lowerBoundary&&0<(lowerBoundary+(lowerWidth/2)))
 			{
@@ -560,6 +598,7 @@ class HSV extends HorizontalScrollView {
 				.setBoundaryX(position, upperBoundary - refBoundary);
 				break;
 			}
+			
 		}
 		// Log.i(TAG, mainActivity.)
 
