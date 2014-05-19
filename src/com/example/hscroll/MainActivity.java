@@ -34,9 +34,13 @@ public class MainActivity extends Activity {
 	// Remember to use Integer instead of int to avoid Arrays.asList.contains
 	// return wrong result.
 	private Integer[] mVisiblePosition;
-	// it works up to 10 ms (tested on this particular device), but considering slower device (?need confirmation),
+	// it works up to 10 ms (tested on this particular device), but considering
+	// slower device (?need confirmation),
 	// and UX that inserting a small interval between user and UI action makes
-	// it looks smooth (!but here the interval is not constant).
+	// it looks smooth (!but here the interval is not constant since the
+	// AsyncTask runs different times, this could be beneficial as the more
+	// determined scroll (i.e sweep to final location with finger) will settle
+	// faster and less determined scroll (i.e fling) will settle slower).
 	private int mDelay = 30;
 
 	ViewHolder touchedViewHolder;
@@ -90,18 +94,18 @@ public class MainActivity extends Activity {
 	class ViewHolder {
 		public com.example.hscroll.HSV hsv;
 		public LinearLayout hll;
-//		public Button btn1;
-//		public Button btn2;
-//		public Button btn3;
-//		public Button btn4;
-//		public Button btn5;
-//		public Button btn6;
+		// public Button btn1;
+		// public Button btn2;
+		// public Button btn3;
+		// public Button btn4;
+		// public Button btn5;
+		// public Button btn6;
 	}
 
 	public class MyAdapter extends BaseAdapter {
 		private View[] itemViews = new View[100];
 		private int itemViewsLength = itemViews.length;
-		private View[] innerItemViews = new View[6];
+		private View[] innerItemViews = new View[30];
 
 		public int getItemViewsLength() {
 			return itemViewsLength;
@@ -192,18 +196,18 @@ public class MainActivity extends Activity {
 
 				viewHolder.hsv = (com.example.hscroll.HSV) convertView
 						.findViewById(R.id.hsview);
-//				viewHolder.btn1 = (Button) convertView
-//						.findViewById(R.id.button_m1);
-//				viewHolder.btn2 = (Button) convertView
-//						.findViewById(R.id.button_1);
-//				viewHolder.btn3 = (Button) convertView
-//						.findViewById(R.id.button_3);
-//				viewHolder.btn4 = (Button) convertView
-//						.findViewById(R.id.button_2);
-//				viewHolder.btn5 = (Button) convertView
-//						.findViewById(R.id.button_p1);
-//				viewHolder.btn6 = (Button) convertView
-//						.findViewById(R.id.button_p2);
+				// viewHolder.btn1 = (Button) convertView
+				// .findViewById(R.id.button_m1);
+				// viewHolder.btn2 = (Button) convertView
+				// .findViewById(R.id.button_1);
+				// viewHolder.btn3 = (Button) convertView
+				// .findViewById(R.id.button_3);
+				// viewHolder.btn4 = (Button) convertView
+				// .findViewById(R.id.button_2);
+				// viewHolder.btn5 = (Button) convertView
+				// .findViewById(R.id.button_p1);
+				// viewHolder.btn6 = (Button) convertView
+				// .findViewById(R.id.button_p2);
 				viewHolder.hll = (LinearLayout) convertView
 						.findViewById(R.id.hlinear);
 				// this tag the convertView created here for reusing.
@@ -225,22 +229,26 @@ public class MainActivity extends Activity {
 				// setBoundaryX(5, location1[0]);
 				// Log.i(TAG, "BoundaryList"
 				// + Arrays.asList(BoundaryList).toString());
-				
-				for (int i=0; i<innerItemViews.length;i++){
+
+				for (int i = 0; i < innerItemViews.length; i++) {
 					Button button = new Button(getApplicationContext());
-					button.setText("This is a Button "+(position+1)+" "+(i+1));
-				viewHolder.hll.addView(button);
+					button.setText("This is a Button " + (position + 1) + " "
+							+ (i + 1));
+					viewHolder.hll.addView(button);
 				}
-				for (int i=0; i<innerItemViews.length;i++){
+				for (int i = 0; i < innerItemViews.length; i++) {
 					Button button = new Button(getApplicationContext());
-					button.setText("This is a Button "+(position+1)+" "+(i+1));
-				viewHolder.hll.addView(button);
+					button.setText("This is a Button " + (position + 1) + " "
+							+ (i + 1));
+					viewHolder.hll.addView(button);
 				}
-//				int[] midChildLoc = new int[2];
-//				viewHolder.hll.getChildAt((viewHolder.hll.getChildCount()/2)-1).getLocationOnScreen(midChildLoc);
-//				Log.i(TAG, "midLoc"+midChildLoc[0]+" midChildCount "+((viewHolder.hll.getChildCount()/2)-1));
-//				viewHolder.hsv.scrollBy(1, 0);
-//				viewHolder.hsv.scrollBy(-1, 0);
+
+				// viewHolder.hsv.scrollTo(100, 0);
+				// int[] midChildLoc = new int[2];
+				// viewHolder.hll.getChildAt((viewHolder.hll.getChildCount()/2)-1).getLocationInWindow(midChildLoc);
+				// Log.i(TAG,
+				// "midLoc"+midChildLoc[0]+" midChildCount "+((viewHolder.hll.getChildCount()/2)-1)+" test "+viewHolder.hsv.getWidth());
+				// // viewHolder.hll.scrollTo(0, 0);
 
 			} else {
 				// reuse created view
@@ -282,6 +290,11 @@ public class MainActivity extends Activity {
 			// Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" +
 			// position);
 
+			// int[] midChildLoc = new int[2];
+			// viewHolder.hll.getChildAt((viewHolder.hll.getChildCount()/2)-1).getLocationOnScreen(midChildLoc);
+			// Log.i(TAG, "midLoc"+midChildLoc[0]+" p "+position);
+			// setScrollX(position, midChildLoc[0]);
+
 			// set OnTouchListener to obtain the scrollX value
 			convertView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -302,9 +315,9 @@ public class MainActivity extends Activity {
 					// Reassign touch event to HorizontalScrollView's
 					// onTouchEvent, in order to scroll, if the onTouch set to
 					// true ???try pass to different container(not working)
-					
-					
-//					TODO comment the following if to simplify debug while trying dynamic adding
+
+					// TODO comment the following if to simplify debug while
+					// trying dynamic adding
 					if (event.getAction() == MotionEvent.ACTION_UP) {
 						new getFinalXTask().execute(position);
 						Log.i(TAG,
@@ -316,24 +329,25 @@ public class MainActivity extends Activity {
 														"com.example.hscroll.MainActivity$ViewHolder",
 														""));
 					}
-					
-//					switch (event.getAction()) {
-//					case MotionEvent.ACTION_MOVE:
-//						int childCount = touchedViewHolder.hll.getChildCount();
-//						int lastChildWidth= touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
-//						int HSVWidth = touchedViewHolder.hll.getWidth();
-//						DisplayMetrics dm = getResources().getDisplayMetrics();
-//						int screenWidth = dm.widthPixels;
-//						if (screenWidth<=(HSVWidth-getScrollX(position)-lastChildWidth))touchedViewHolder.hsv.scrollBy(-(HSVWidth/2), 0);
-//						break;
-////
-////					case MotionEvent.ACTION_UP:
-////						new getFinalXTask().execute(position);
-////						break;
-//					}
-					
-					
-					
+
+					// switch (event.getAction()) {
+					// case MotionEvent.ACTION_MOVE:
+					// int childCount = touchedViewHolder.hll.getChildCount();
+					// int lastChildWidth=
+					// touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
+					// int HSVWidth = touchedViewHolder.hll.getWidth();
+					// DisplayMetrics dm = getResources().getDisplayMetrics();
+					// int screenWidth = dm.widthPixels;
+					// if
+					// (screenWidth<=(HSVWidth-getScrollX(position)-lastChildWidth))touchedViewHolder.hsv.scrollBy(-(HSVWidth/2),
+					// 0);
+					// break;
+					// //
+					// // case MotionEvent.ACTION_UP:
+					// // new getFinalXTask().execute(position);
+					// // break;
+					// }
+
 					touchedViewHolder.hsv.onTouchEvent(event);
 
 					// the getLocationOnScreen can provide absolute top-left
@@ -372,7 +386,7 @@ public class MainActivity extends Activity {
 			// Debug
 			String viewID = viewHolder.hsv.getTag().toString()
 					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
-//			viewHolder.btn3.setText("R" + position + " V" + viewID);
+			// viewHolder.btn3.setText("R" + position + " V" + viewID);
 			// Log.i(TAG, " position " + position + " viewID " + viewID
 			// + " ScrollX " + viewHolder.hsv.getScrollX() + "+"
 			// + convertView.getScrollX());
@@ -553,7 +567,7 @@ class HSV extends HorizontalScrollView {
 		// childCount -1 or will exceed, remember the last digit of i never
 		// reach in for loop.
 		for (int i = 0; i < childCount - 1; i++) {
-//			TODO separate the getLocationOnScreen method, return a int
+			// TODO separate the getLocationOnScreen method, return a int
 			int[] locationLow = new int[2];
 			int[] locationUpper = new int[2];
 			int[] locationRef = new int[2];
@@ -571,17 +585,14 @@ class HSV extends HorizontalScrollView {
 			int refBoundary = locationRef[0];
 			// Log.i(TAG, "Boundary Ref" + refBoundary);
 			// Log.i(TAG, "Lower-Ref"+(lowerBoundary-refBoundary));
-			int lowerWidth=mainActivity.touchedViewHolder.hll.getChildAt(i).getWidth();
-			int upperWidth=mainActivity.touchedViewHolder.hll.getChildAt(i+1).getWidth();
-			//			Log.i(TAG, "i "+i);
-			
-			
-	
-			
-			
-//			if (0 >= lowerBoundary && 0 < upperBoundary)
-			if (0>=lowerBoundary&&0<(lowerBoundary+(lowerWidth/2)))
-			{
+			int lowerWidth = mainActivity.touchedViewHolder.hll.getChildAt(i)
+					.getWidth();
+			int upperWidth = mainActivity.touchedViewHolder.hll.getChildAt(
+					i + 1).getWidth();
+			// Log.i(TAG, "i "+i);
+
+			// if (0 >= lowerBoundary && 0 < upperBoundary)
+			if (0 >= lowerBoundary && 0 < (lowerBoundary + (lowerWidth / 2))) {
 				// Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
 				// refBoundary)
 				// + " Upper Boundary " + (upperBoundary - refBoundary));
@@ -592,41 +603,63 @@ class HSV extends HorizontalScrollView {
 				// t);
 				break;
 			}
-			if(0>=(lowerBoundary+(lowerWidth/2))&&0<(upperBoundary+(lowerWidth/2))) 
-			{
+			if (0 >= (lowerBoundary + (lowerWidth / 2))
+					&& 0 < (upperBoundary + (lowerWidth / 2))) {
 				mainActivity
-				.setBoundaryX(position, upperBoundary - refBoundary);
+						.setBoundaryX(position, upperBoundary - refBoundary);
 				break;
 			}
-			
+
 		}
 		// Log.i(TAG, mainActivity.)
-		
-		int[] lastChildLoc=new int[2];
-		mainActivity.touchedViewHolder.hll.getChildAt(childCount-1).getLocationOnScreen(lastChildLoc);
-//		int[] midChildLoc = new int[2];
-//		mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getLocationOnScreen(midChildLoc);
-//		int midChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getWidth();
-//		int theline = lastChildLoc[0]-mainActivity.touchedViewHolder.hsv.getWidth();
-//		if (l>=theline)mainActivity.touchedViewHolder.hll.scrollBy(-(midChildLoc[0]+midChildWidth), 0);
-//		Log.i(TAG, "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
-		int lastChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
-		int firstChildWidth= mainActivity.touchedViewHolder.hll.getChildAt(0).getWidth();
+
+		// There will be problems if the two sets of elements set in getView()
+		// have noticeable width difference, through in what we intent to do,
+		// there should be no difference.
+		int[] lastChildLoc = new int[2];
+		mainActivity.touchedViewHolder.hll.getChildAt(childCount - 1)
+				.getLocationOnScreen(lastChildLoc);
+		// int[] midChildLoc = new int[2];
+		// mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getLocationOnScreen(midChildLoc);
+		// int midChildWidth=
+		// mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getWidth();
+		// int theline =
+		// lastChildLoc[0]-mainActivity.touchedViewHolder.hsv.getWidth();
+		// if
+		// (l>=theline)mainActivity.touchedViewHolder.hll.scrollBy(-(midChildLoc[0]+midChildWidth),
+		// 0);
+		// Log.i(TAG,
+		// "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
+		int lastChildWidth = mainActivity.touchedViewHolder.hll.getChildAt(
+				(childCount) - 1).getWidth();
+		int firstChildWidth = mainActivity.touchedViewHolder.hll.getChildAt(0)
+				.getWidth();
 		int HSVWidth = mainActivity.touchedViewHolder.hll.getWidth();
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		int screenWidth = dm.widthPixels;
-//		Log.i(TAG, "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
-//		Log.i(TAG, "l "+l+" lastLeft"+lastChildLoc[0]+" screen "+HSVWidth+" lv "+lastChildWidth+" screen-width "+(HSVWidth-lastChildWidth)+ "screen width"+screenWidth);
-		mainActivity.touchedViewHolder.hll.getChildAt((childCount)-1).setBackgroundColor(Color.BLUE);
-		Log.i(TAG, "screen width"+ screenWidth+" difference "+(HSVWidth-l-lastChildWidth));
-//		if (screenWidth<=(HSVWidth-l-lastChildWidth))mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth/2), 0);
-		if (screenWidth>=(HSVWidth-l-lastChildWidth)) {Log.i(TAG, ">= true");
-		mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth/2), 0);
+		// Log.i(TAG,
+		// "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
+		// Log.i(TAG,
+		// "l "+l+" lastLeft"+lastChildLoc[0]+" screen "+HSVWidth+" lv "+lastChildWidth+" screen-width "+(HSVWidth-lastChildWidth)+
+		// "screen width"+screenWidth);
+		mainActivity.touchedViewHolder.hll.getChildAt((childCount) - 1)
+				.setBackgroundColor(Color.BLUE);
+		Log.i(TAG, "screen width" + screenWidth + " difference "
+				+ (HSVWidth - l - lastChildWidth));
+		// if
+		// (screenWidth<=(HSVWidth-l-lastChildWidth))mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth/2),
+		// 0);
+
+		// cause there is align mechanism, if not the elements may jump a little
+		if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
+			Log.i(TAG, ">= true");
+			mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
 		}
-		if (l<= firstChildWidth) {Log.i(TAG, "<= true");
-		mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth/2), 0);
+		if (l <= firstChildWidth) {
+			Log.i(TAG, "<= true");
+			mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
 		}
-//		if(l>=1000)mainActivity.touchedViewHolder.hll.scrollBy(-500, 0);
+		// if(l>=1000)mainActivity.touchedViewHolder.hll.scrollBy(-500, 0);
 
 	}
 
