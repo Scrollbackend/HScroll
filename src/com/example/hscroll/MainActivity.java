@@ -5,9 +5,11 @@ import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +19,6 @@ import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Scroller;
 
 public class MainActivity extends Activity {
 	// Set up singleton mode to allow HSV use method in this activity
@@ -227,15 +228,19 @@ public class MainActivity extends Activity {
 				
 				for (int i=0; i<innerItemViews.length;i++){
 					Button button = new Button(getApplicationContext());
-					button.setText("This is a Button "+i);
+					button.setText("This is a Button "+(position+1)+" "+(i+1));
 				viewHolder.hll.addView(button);
 				}
 				for (int i=0; i<innerItemViews.length;i++){
 					Button button = new Button(getApplicationContext());
-					button.setText("This is a Button "+i);
+					button.setText("This is a Button "+(position+1)+" "+(i+1));
 				viewHolder.hll.addView(button);
 				}
-				
+//				int[] midChildLoc = new int[2];
+//				viewHolder.hll.getChildAt((viewHolder.hll.getChildCount()/2)-1).getLocationOnScreen(midChildLoc);
+//				Log.i(TAG, "midLoc"+midChildLoc[0]+" midChildCount "+((viewHolder.hll.getChildCount()/2)-1));
+//				viewHolder.hsv.scrollBy(1, 0);
+//				viewHolder.hsv.scrollBy(-1, 0);
 
 			} else {
 				// reuse created view
@@ -300,23 +305,28 @@ public class MainActivity extends Activity {
 					
 					
 //					TODO comment the following if to simplify debug while trying dynamic adding
-//					if (event.getAction() == MotionEvent.ACTION_UP) {
-//						new getFinalXTask().execute(position);
-//						Log.i(TAG,
-//								"onTouchViewHolder"
-//										+ touchedViewHolder.hsv
-//												.getTag()
-//												.toString()
-//												.replace(
-//														"com.example.hscroll.MainActivity$ViewHolder",
-//														""));
-//					}
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						new getFinalXTask().execute(position);
+						Log.i(TAG,
+								"onTouchViewHolder"
+										+ touchedViewHolder.hsv
+												.getTag()
+												.toString()
+												.replace(
+														"com.example.hscroll.MainActivity$ViewHolder",
+														""));
+					}
 					
 //					switch (event.getAction()) {
 //					case MotionEvent.ACTION_MOVE:
-//						
+//						int childCount = touchedViewHolder.hll.getChildCount();
+//						int lastChildWidth= touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
+//						int HSVWidth = touchedViewHolder.hll.getWidth();
+//						DisplayMetrics dm = getResources().getDisplayMetrics();
+//						int screenWidth = dm.widthPixels;
+//						if (screenWidth<=(HSVWidth-getScrollX(position)-lastChildWidth))touchedViewHolder.hsv.scrollBy(-(HSVWidth/2), 0);
 //						break;
-//
+////
 ////					case MotionEvent.ACTION_UP:
 ////						new getFinalXTask().execute(position);
 ////						break;
@@ -360,8 +370,8 @@ public class MainActivity extends Activity {
 			});
 
 			// Debug
-//			String viewID = viewHolder.hsv.getTag().toString()
-//					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
+			String viewID = viewHolder.hsv.getTag().toString()
+					.replace("com.example.hscroll.MainActivity$ViewHolder", "");
 //			viewHolder.btn3.setText("R" + position + " V" + viewID);
 			// Log.i(TAG, " position " + position + " viewID " + viewID
 			// + " ScrollX " + viewHolder.hsv.getScrollX() + "+"
@@ -565,18 +575,8 @@ class HSV extends HorizontalScrollView {
 			int upperWidth=mainActivity.touchedViewHolder.hll.getChildAt(i+1).getWidth();
 			//			Log.i(TAG, "i "+i);
 			
-			int[] lastChildLoc=new int[2];
-			mainActivity.touchedViewHolder.hll.getChildAt(childCount-1).getLocationOnScreen(lastChildLoc);
-//			int[] midChildLoc = new int[2];
-//			mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getLocationOnScreen(midChildLoc);
-//			int midChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getWidth();
-//			int theline = lastChildLoc[0]-mainActivity.touchedViewHolder.hsv.getWidth();
-//			if (l>=theline)mainActivity.touchedViewHolder.hll.scrollBy(-(midChildLoc[0]+midChildWidth), 0);
-//			Log.i(TAG, "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
-			int lastChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
-			int HSVWidth = mainActivity.touchedViewHolder.hll.getWidth();
-			Log.i(TAG, "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
-//			if(l>=1000)mainActivity.touchedViewHolder.hll.scrollBy(-500, 0);
+			
+	
 			
 			
 //			if (0 >= lowerBoundary && 0 < upperBoundary)
@@ -601,6 +601,32 @@ class HSV extends HorizontalScrollView {
 			
 		}
 		// Log.i(TAG, mainActivity.)
+		
+		int[] lastChildLoc=new int[2];
+		mainActivity.touchedViewHolder.hll.getChildAt(childCount-1).getLocationOnScreen(lastChildLoc);
+//		int[] midChildLoc = new int[2];
+//		mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getLocationOnScreen(midChildLoc);
+//		int midChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount/2)-1).getWidth();
+//		int theline = lastChildLoc[0]-mainActivity.touchedViewHolder.hsv.getWidth();
+//		if (l>=theline)mainActivity.touchedViewHolder.hll.scrollBy(-(midChildLoc[0]+midChildWidth), 0);
+//		Log.i(TAG, "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
+		int lastChildWidth= mainActivity.touchedViewHolder.hll.getChildAt((childCount)-1).getWidth();
+		int firstChildWidth= mainActivity.touchedViewHolder.hll.getChildAt(0).getWidth();
+		int HSVWidth = mainActivity.touchedViewHolder.hll.getWidth();
+		DisplayMetrics dm = getResources().getDisplayMetrics();
+		int screenWidth = dm.widthPixels;
+//		Log.i(TAG, "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
+//		Log.i(TAG, "l "+l+" lastLeft"+lastChildLoc[0]+" screen "+HSVWidth+" lv "+lastChildWidth+" screen-width "+(HSVWidth-lastChildWidth)+ "screen width"+screenWidth);
+		mainActivity.touchedViewHolder.hll.getChildAt((childCount)-1).setBackgroundColor(Color.BLUE);
+		Log.i(TAG, "screen width"+ screenWidth+" difference "+(HSVWidth-l-lastChildWidth));
+//		if (screenWidth<=(HSVWidth-l-lastChildWidth))mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth/2), 0);
+		if (screenWidth>=(HSVWidth-l-lastChildWidth)) {Log.i(TAG, ">= true");
+		mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth/2), 0);
+		}
+		if (l<= firstChildWidth) {Log.i(TAG, "<= true");
+		mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth/2), 0);
+		}
+//		if(l>=1000)mainActivity.touchedViewHolder.hll.scrollBy(-500, 0);
 
 	}
 
