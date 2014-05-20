@@ -184,7 +184,6 @@ public class MainActivity extends Activity {
 				ViewGroup parent) {
 			// TODO Auto-generated method stub
 			final ViewHolder viewHolder;
-			final Button btn3View;
 			if (null == convertView) {
 				viewHolder = new ViewHolder();
 				convertView = getLayoutInflater().inflate(R.layout.hsview,
