@@ -249,6 +249,7 @@ public class MainActivity extends Activity {
 				// Log.i(TAG,
 				// "midLoc"+midChildLoc[0]+" midChildCount "+((viewHolder.hll.getChildCount()/2)-1)+" test "+viewHolder.hsv.getWidth());
 				// // viewHolder.hll.scrollTo(0, 0);
+//				Log.i(TAG, "HSVwidth"+viewHolder.hsv.getWidth()+" LLwidth "+viewHolder.hll.getWidth());
 
 			} else {
 				// reuse created view
