@@ -514,16 +514,16 @@ class HSV extends HorizontalScrollView {
 //				+ (HSVWidth - l - lastChildWidth));
 
 		// cause there is align mechanism, if not the elements may jump a little
-//		if (position != -1) {
-//			if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
-//				Log.i(TAG, ">= true");
-//				mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
-//			}
-//			if (l <= firstChildWidth) {
-//				Log.i(TAG, "<= true");
-//				mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
-//			}
-//		}
+		if (position != -1) {
+			if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
+				Log.i(TAG, ">= true");
+				mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
+			}
+			if (l <= firstChildWidth) {
+				Log.i(TAG, "<= true");
+				mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
+			}
+		}
 
 	}
 
