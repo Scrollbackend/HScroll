@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 		// ensure the scrollX value of the position is not invisible
 		if (Arrays.asList(mVisiblePosition).contains(position)) {
 			scrollXList.set(position + 1, scrollX);
-			Log.i(TAG, "MSetS" + " P " + position + " X " + scrollX);
+//			Log.i(TAG, "MSetS" + " P " + position + " X " + scrollX);
 
 		}
 	}
@@ -88,8 +88,8 @@ public class MainActivity extends Activity {
 	public void setBoundaryX(int position, int lowerBoundary) {
 
 		BoundaryList.set(position + 1, lowerBoundary);
-		// Log.i(TAG, "setBoundaryList"
-		// + Arrays.asList(BoundaryList).toString());
+//		 Log.i(TAG, "setBoundaryList"
+//		 + Arrays.asList(BoundaryList).toString());
 
 	}
 
@@ -270,7 +270,7 @@ public class MainActivity extends Activity {
 					// true ???try pass to different container(not working)
 
 					if (event.getAction() == MotionEvent.ACTION_UP) {
-						new getFinalXTask().execute(position);
+						new getFinalXTask().execute(position, touchedViewHolder.hsv);
 						Log.i(TAG,
 								"onTouchViewHolder"
 										+ touchedViewHolder.hsv
@@ -308,25 +308,37 @@ public class MainActivity extends Activity {
 
 	}
 
-	class getFinalXTask extends AsyncTask<Integer, Void, Integer> {
+	class getFinalXTask extends AsyncTask<Object, Void, Integer> {
 		Integer oldX;
 		Integer newX;
 		int testCount = 0;
 		Boolean isScrollStop = false;
 		private MainActivity mainActivity = MainActivity.getInstance();
+//		private ViewHolder viewTag;
+		
 
 		@Override
-		protected Integer doInBackground(Integer... position) {
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+//			viewTag=(ViewHolder) mainActivity.touchedViewHolder.hsv.getTag();
+		}
+
+		@Override
+		protected Integer doInBackground(Object... params) {
 			// TODO oldx and newx got the same always, that cause this method
 			// only run once
 			// Can I use l and oldl directly? No, the oldl never = l;
-			oldX = myAdapter.getScrollX(position[0]);
+			Integer position = (Integer) params[0];
+			HorizontalScrollView touchedView = (HorizontalScrollView) params[1];
+			Log.i(TAG, "touchedView "+touchedView.toString().replace("com.example.hscroll.MainActivity$ViewHolder", ""));
+			oldX = myAdapter.getScrollX(position);
 			 Log.i(TAG,
-			 "Async Position"+Arrays.asList(position).toString()+"P"+position[0]+" oldX "+myAdapter.getScrollX(position[0]));
+			 "Async Position"+Arrays.asList(position).toString()+"P"+position+" oldX "+myAdapter.getScrollX(position));
 			// Log.i(TAG, "oldX " + oldX);
 			do {
 				sleep();
-				newX = myAdapter.getScrollX(position[0]);
+				newX = myAdapter.getScrollX(position);
 				// Log.i(TAG, "newX " + newX);
 				// Log.i(TAG,
 				// "!oldX.equals(newX) "+!oldX.equals(newX)+" isScrollStop "+isScrollStop+" newX "+newX);
@@ -338,12 +350,17 @@ public class MainActivity extends Activity {
 				}
 				// Log.i(TAG, "isScrollStop " + isScrollStop + " Pos "
 				// + position[0] + " NoldX " + oldX + " newX " + newX);
-				 Log.i(TAG, "*************count " + testCount+" P "+position[0]);
+				 Log.i(TAG, "*************count " + testCount+" P "+position+" Tag "+mainActivity.touchedViewHolder.hsv.getTag().toString().replace("com.example.hscroll.MainActivity$ViewHolder", ""));
 				testCount++;
 			} while (!isScrollStop);
-			newX = mainActivity.myAdapter.getBoundaryX(position[0]);
-			mainActivity.touchedViewHolder.hsv.smoothScrollTo(newX, 0);
-			mainActivity.setScrollX(position[0], newX);
+			newX = mainActivity.myAdapter.getBoundaryX(position);
+//			if (mainActivity.touchedViewHolder.hsv.getTag()==viewTag)
+//			mainActivity.touchedViewHolder.hsv.smoothScrollTo(newX, 0);
+//			viewTag.hsv.smoothScrollTo(newX, 0);
+			touchedView.smoothScrollTo(newX, 0);
+			Log.i(TAG, "touchedView.scroll "+touchedView.toString().replace("com.example.hscroll.MainActivity$ViewHolder", ""));
+			Log.i(TAG, "smoothScrollTo"+newX+" P "+position+" Tag "+mainActivity.touchedViewHolder.hsv.getTag().toString().replace("com.example.hscroll.MainActivity$ViewHolder", ""));
+			mainActivity.setScrollX(position, newX);
 			return newX;
 		}
 
@@ -448,9 +465,9 @@ class HSV extends HorizontalScrollView {
 
 			// if (0 >= lowerBoundary && 0 < upperBoundary)
 			if (0 >= lowerBoundary && 0 < (lowerBoundary + (lowerWidth / 2))) {
-				 Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
-				 refBoundary)
-				 + " Upper Boundary " + (upperBoundary - refBoundary));
+//				 Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
+//				 refBoundary)
+//				 + " Upper Boundary " + (upperBoundary - refBoundary));
 				mainActivity
 						.setBoundaryX(position, lowerBoundary - refBoundary);
 
@@ -497,16 +514,16 @@ class HSV extends HorizontalScrollView {
 //				+ (HSVWidth - l - lastChildWidth));
 
 		// cause there is align mechanism, if not the elements may jump a little
-		if (position != -1) {
-			if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
-				Log.i(TAG, ">= true");
-				mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
-			}
-			if (l <= firstChildWidth) {
-				Log.i(TAG, "<= true");
-				mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
-			}
-		}
+//		if (position != -1) {
+//			if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
+//				Log.i(TAG, ">= true");
+//				mainActivity.touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
+//			}
+//			if (l <= firstChildWidth) {
+//				Log.i(TAG, "<= true");
+//				mainActivity.touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
+//			}
+//		}
 
 	}
 
