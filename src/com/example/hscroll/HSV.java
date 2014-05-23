@@ -14,10 +14,11 @@ import android.widget.HorizontalScrollView;
 //It is been created many instances while convertView == null
 public class HSV extends HorizontalScrollView {
 	private static final String TAG = "hscroll";
-//	private MainActivity mainActivity = MainActivity.getInstance();
+	// private MainActivity mainActivity = MainActivity.getInstance();
 
 	private int position;
 	private ViewHolder touchedViewHolder = new ViewHolder();
+	private ListHorizontalScrollViewAdapter LHSVAdapter = ListHorizontalScrollViewAdapter.getInstance();
 
 	// **********TC2***************
 	public void setPosition(int position) {
@@ -32,19 +33,16 @@ public class HSV extends HorizontalScrollView {
 	// this will not run
 	public HSV(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
 
 	// this will run
 	public HSV(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
-		
+
 	}
 
 	@Override
 	public void scrollTo(int x, int y) {
-		// TODO Auto-generated method stub
 		super.scrollTo(x, y);
 	}
 
@@ -59,8 +57,9 @@ public class HSV extends HorizontalScrollView {
 		// the arraylist.
 
 		// **********TC1***************
-//		mainActivity.setScrollX(position, l);
-//		Log.i(TAG, "l:" + l + " ol:" + oldl + " P:" + position);
+		// TODO
+		 LHSVAdapter.setScrollX(position, l);
+		// Log.i(TAG, "l:" + l + " ol:" + oldl + " P:" + position);
 
 		// getLocationOnScreen and getScrollX both provide accurate result. But
 		// the boundaries need calculate as the scroll happening since the views
@@ -78,8 +77,8 @@ public class HSV extends HorizontalScrollView {
 			int[] locationRef = new int[2];
 			touchedViewHolder.hll.getChildAt(i)
 					.getLocationOnScreen(locationLow);
-			touchedViewHolder.hll.getChildAt(i + 1)
-					.getLocationOnScreen(locationUpper);
+			touchedViewHolder.hll.getChildAt(i + 1).getLocationOnScreen(
+					locationUpper);
 			touchedViewHolder.hll.getChildAt(0)
 					.getLocationOnScreen(locationRef);
 			int lowerBoundary = locationLow[0];
@@ -90,19 +89,18 @@ public class HSV extends HorizontalScrollView {
 			int refBoundary = locationRef[0];
 			// Log.i(TAG, "Boundary Ref" + refBoundary);
 			// Log.i(TAG, "Lower-Ref"+(lowerBoundary-refBoundary));
-			int lowerWidth = touchedViewHolder.hll.getChildAt(i)
-					.getWidth();
-			int upperWidth = touchedViewHolder.hll.getChildAt(
-					i + 1).getWidth();
-//			 Log.i(TAG, "i "+i);
+			int lowerWidth = touchedViewHolder.hll.getChildAt(i).getWidth();
+			int upperWidth = touchedViewHolder.hll.getChildAt(i + 1).getWidth();
+			// Log.i(TAG, "i "+i);
 
 			// if (0 >= lowerBoundary && 0 < upperBoundary)
 			if (0 >= lowerBoundary && 0 < (lowerBoundary + (lowerWidth / 2))) {
-//				 Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
-//				 refBoundary)
-//				 + " Upper Boundary " + (upperBoundary - refBoundary));
-//				mainActivity
-//						.setBoundaryX(position, lowerBoundary - refBoundary);
+				// Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
+				// refBoundary)
+				// + " Upper Boundary " + (upperBoundary - refBoundary));
+				// TODO
+				 LHSVAdapter
+				 .setBoundaryX(position, lowerBoundary - refBoundary);
 
 				// mainActivity.touchedViewHolder.hll.scrollTo(lowerBoundary-refBoundary,
 				// t);
@@ -110,8 +108,9 @@ public class HSV extends HorizontalScrollView {
 			}
 			if (0 >= (lowerBoundary + (lowerWidth / 2))
 					&& 0 < (upperBoundary + (lowerWidth / 2))) {
-//				mainActivity
-//						.setBoundaryX(position, upperBoundary - refBoundary);
+				// TODO
+				 LHSVAdapter
+				 .setBoundaryX(position, upperBoundary - refBoundary);
 				break;
 			}
 
@@ -122,29 +121,28 @@ public class HSV extends HorizontalScrollView {
 		// have noticeable width difference, through in what we intent to do,
 		// there should be no significant difference.
 		int[] lastChildLoc = new int[2];
-		touchedViewHolder.hll.getChildAt(childCount - 1)
-				.getLocationOnScreen(lastChildLoc);
+		touchedViewHolder.hll.getChildAt(childCount - 1).getLocationOnScreen(
+				lastChildLoc);
 		// Log.i(TAG,
 		// "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
-		int lastChildWidth = touchedViewHolder.hll.getChildAt(
-				(childCount) - 1).getWidth();
-		int firstChildWidth = touchedViewHolder.hll.getChildAt(0)
+		int lastChildWidth = touchedViewHolder.hll.getChildAt((childCount) - 1)
 				.getWidth();
+		int firstChildWidth = touchedViewHolder.hll.getChildAt(0).getWidth();
 		int HSVWidth = touchedViewHolder.hll.getWidth();
 
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		int screenWidth = dm.widthPixels;
 		// Log.i(TAG,
 		// "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
-//		Log.i(TAG, "l " + l + " lastLeft" + lastChildLoc[0] + " screen "
-//				+ HSVWidth + " lv " + lastChildWidth + " screen-width "
-//				+ (HSVWidth - lastChildWidth) + "screen width" + screenWidth);
+		// Log.i(TAG, "l " + l + " lastLeft" + lastChildLoc[0] + " screen "
+		// + HSVWidth + " lv " + lastChildWidth + " screen-width "
+		// + (HSVWidth - lastChildWidth) + "screen width" + screenWidth);
 
 		// Debug
-		touchedViewHolder.hll.getChildAt((childCount) - 1)
-				.setBackgroundColor(Color.BLUE);
-//		Log.i(TAG, "screen width" + screenWidth + " difference "
-//				+ (HSVWidth - l - lastChildWidth));
+		touchedViewHolder.hll.getChildAt((childCount) - 1).setBackgroundColor(
+				Color.BLUE);
+		// Log.i(TAG, "screen width" + screenWidth + " difference "
+		// + (HSVWidth - l - lastChildWidth));
 
 		// cause there is align mechanism, if not the elements may jump a little
 		if (position != -1) {
