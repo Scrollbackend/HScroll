@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class ListHorizontalScrollViewAdapter extends BaseAdapter {
-//	TODO obtain the items number from main input
+	// TODO obtain the items number from main input
 	private View[] itemViews = new View[100];
 	private int itemViewsLength = itemViews.length;
-	private View[] innerItemViews = new View[30];
+	private View[] innerItemViews = new View[6];
 	private static final String TAG = "hscroll MyAdapter";
 
 	private ArrayList<Integer> scrollXList;
@@ -40,10 +41,10 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		iniScrollXList();
 		iniBoundaryList();
 	}
-	
+
 	public static ListHorizontalScrollViewAdapter getInstance() {
-		 return INSTANCE;
-		 }
+		return INSTANCE;
+	}
 
 	public int getItemViewsLength() {
 		return itemViewsLength;
@@ -159,28 +160,28 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 			// this tag the convertView created here for reusing.
 			convertView.setTag(viewHolder);
 
-			// for (int i = 0; i < innerItemViews.length; i++) {
-			// Button button = new Button(getApplicationContext());
-			// button.setText("This is a Button " + (position + 1) + " "
-			// + (i + 1));
-			// viewHolder.hll.addView(button);
-			// }
-			// for (int i = 0; i < innerItemViews.length; i++) {
-			// Button button = new Button(getApplicationContext());
-			// button.setText("This is a Button " + (position + 1) + " "
-			// + (i + 1));
-			// viewHolder.hll.addView(button);
-			// }
 			for (int i = 0; i < innerItemViews.length; i++) {
 				Button button = new Button(mContext);
-				button.setText("This is a Button " + (i + 1));
+				button.setText("This is a Button " + (position + 1) + " "
+						+ (i + 1));
 				viewHolder.hll.addView(button);
 			}
 			for (int i = 0; i < innerItemViews.length; i++) {
 				Button button = new Button(mContext);
-				button.setText("This is a Button " + (i + 1));
+				button.setText("This is a Button " + (position + 1) + " "
+						+ (i + 1));
 				viewHolder.hll.addView(button);
 			}
+			// for (int i = 0; i < innerItemViews.length; i++) {
+			// Button button = new Button(mContext);
+			// button.setText("This is a Button " + (i + 1));
+			// viewHolder.hll.addView(button);
+			// }
+			// for (int i = 0; i < innerItemViews.length; i++) {
+			// Button button = new Button(mContext);
+			// button.setText("This is a Button " + (i + 1));
+			// viewHolder.hll.addView(button);
+			// }
 
 		} else {
 			// reuse created view
@@ -201,6 +202,19 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		convertView.scrollTo(getScrollX(position), 0);
 		// Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" +
 		// position);
+
+		// TODO because the view reuse will mess around the order, so the
+		// content of each item children need to set here.This work for the
+		// starting too. Remember the view will carry the state around, the
+		// setting need to be reinforced for every item on each vertical scroll.
+		// [!] However, this will seriously slow down the render to a point like
+		// no view reuse if the number of child in item is large.
+		// [?] If not using listview, a linearview BUT that would not be
+		// dynamic.
+		for (int i = 0; i < viewHolder.hll.getChildCount() - 1; i++) {
+			Button button = (Button) viewHolder.hll.getChildAt(i);
+			button.setText("This is a Button " + (position + 1) + " " + (i + 1));
+		}
 
 		// TODO the following can get each midloc after scrolling down, can
 		// scroll to bottom then back to top at start?
@@ -232,7 +246,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					// TODO
-					 new GetFinalXTask().execute(position, v, this);
+					new GetFinalXTask().execute(position, v);
 					Log.i(TAG,
 							"onTouchViewHolder"
 									+ touchedViewHolder.hsv
