@@ -2,6 +2,7 @@ package com.example.hscroll;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
@@ -10,8 +11,9 @@ public class MainActivity extends Activity {
 
 	private static final String TAG = "hscroll";
 	private ListHorizontalScrollViewAdapter myAdapter;
-
 	private ListView listView;
+	private View[] itemViews = new View[100];
+	private View[] innerItemViews = new View[10];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +22,9 @@ public class MainActivity extends Activity {
 		listView = (ListView) findViewById(R.id.listview_main);
 		// set Singleton return instance
 		// INSTANCE = this;
-		myAdapter = new ListHorizontalScrollViewAdapter(
-				getApplicationContext(), listView);
+		myAdapter = new ListHorizontalScrollViewAdapter(itemViews,
+				innerItemViews, getApplicationContext(), listView, "ALIGN_TO_BOTH",
+				"Enable");
 		listView.setAdapter(myAdapter);
 
 	}

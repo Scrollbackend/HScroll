@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,11 +14,35 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+
+
+/**
+ * Require following input parameters in this order
+ * @param <View> View[],How many lines of item are there in the ListView;
+ * @param <View> View[],How many Child per item;
+ * @param <Context>
+ *            The UI thread context;
+ * @param <ListView>
+ *            The ListView instance;
+ * @param <String>
+ *            Choose which mode of the alignment, options are:
+ *             <p>NO_ALIGN (No
+ *            alignment);</p>
+ *            <p>ALIGN_TO_RIGHT (Always align to the next right child);</p>
+ *            <p>ALIGN_TO_BOTH (Align to itself if the edge is on the left half of
+ *            the child, otherwise to the next right child);</p>
+ * @param <String>
+ *            Choose weather enable or disable the continues scrolling, options
+ *            are: 
+ *            <p>Enable (default enable);</p> 
+ *            <p>Disable (No continues scroll);</p>
+ */
+
+
 public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	// TODO obtain the items number from main input
-	private View[] itemViews = new View[100];
-	private int itemViewsLength = itemViews.length;
-	private View[] innerItemViews = new View[6];
+	private View[] itemViews;
+	private View[] innerItemViews;
 	private static final String TAG = "hscroll MyAdapter";
 
 	private ArrayList<Integer> scrollXList;
@@ -32,12 +55,26 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	ViewHolder touchedViewHolder;
 	private Context mContext;
 	private ListView mListView;
+	private String mAlignMode;
+	private enum ContinuesScrollSetting {
+		Enable,Disable;
+		public static ContinuesScrollSetting getCSrollSetting(String CScrollMode) {
+//			Log.i(TAG, "valueOf" + valueOf(CScrollMode));
+			return valueOf(CScrollMode);
+
+		}
+	};
+	private String cSrollMode;
 	private static ListHorizontalScrollViewAdapter INSTANCE = null;
 
-	public ListHorizontalScrollViewAdapter(Context context, ListView listView) {
+	public ListHorizontalScrollViewAdapter(View[] itemViews, View[] innerItemViews, Context context, ListView listView, String alignMode, String cSrollMode) {
 		INSTANCE = this;
+		this.itemViews = itemViews;
+		this.innerItemViews = innerItemViews;
 		mContext = context;
 		mListView = listView;
+		mAlignMode = alignMode;
+		this.cSrollMode = cSrollMode;
 		iniScrollXList();
 		iniBoundaryList();
 	}
@@ -46,8 +83,17 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		return INSTANCE;
 	}
 
+	public String getmAlignMode() {
+		return mAlignMode;
+	}
+	
+
+	public String getCSrollMode() {
+		return cSrollMode;
+	}
+
 	public int getItemViewsLength() {
-		return itemViewsLength;
+		return itemViews.length;
 	}
 
 	@Override
@@ -159,19 +205,32 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 					.findViewById(R.id.hlinear);
 			// this tag the convertView created here for reusing.
 			convertView.setTag(viewHolder);
+			switch (ContinuesScrollSetting.getCSrollSetting(cSrollMode)) {
+			case Disable:
+				for (int i = 0; i < innerItemViews.length; i++) {
+					Button button = new Button(mContext);
+					button.setText("This is a Button " + (position + 1) + " "
+							+ (i + 1));
+					viewHolder.hll.addView(button);
+				}
+				break;
 
-			for (int i = 0; i < innerItemViews.length; i++) {
-				Button button = new Button(mContext);
-				button.setText("This is a Button " + (position + 1) + " "
-						+ (i + 1));
-				viewHolder.hll.addView(button);
+			default:
+				for (int i = 0; i < innerItemViews.length; i++) {
+					Button button = new Button(mContext);
+					button.setText("This is a Button " + (position + 1) + " "
+							+ (i + 1));
+					viewHolder.hll.addView(button);
+				}
+				for (int i = 0; i < innerItemViews.length; i++) {
+					Button button = new Button(mContext);
+					button.setText("This is a Button " + (position + 1) + " "
+							+ (i + 1));
+					viewHolder.hll.addView(button);
+				}
+				break;
 			}
-			for (int i = 0; i < innerItemViews.length; i++) {
-				Button button = new Button(mContext);
-				button.setText("This is a Button " + (position + 1) + " "
-						+ (i + 1));
-				viewHolder.hll.addView(button);
-			}
+			
 			// for (int i = 0; i < innerItemViews.length; i++) {
 			// Button button = new Button(mContext);
 			// button.setText("This is a Button " + (i + 1));
@@ -188,6 +247,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 			// after recycle a view, reset the position value in HSV.
 			viewHolder.hsv.setPosition(-1);
+			
 
 			// This can get initial btns' X, but need to redraw views to get
 			// valid data, and each row are slightly different, need a
@@ -211,9 +271,14 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		// no view reuse if the number of child in item is large.
 		// [?] If not using listview, a linearview BUT that would not be
 		// dynamic.
-		for (int i = 0; i < viewHolder.hll.getChildCount() - 1; i++) {
+		int childCount = viewHolder.hll.getChildCount();
+		for (int i = 0; i <  (childCount/2)- 1; i++) {
 			Button button = (Button) viewHolder.hll.getChildAt(i);
 			button.setText("This is a Button " + (position + 1) + " " + (i + 1));
+		}
+		for (int i = (childCount/2); i <  childCount- 1; i++) {
+			Button button = (Button) viewHolder.hll.getChildAt(i);
+			button.setText("This is a Button " + (position + 1) + " " + (i-((childCount)/2)+1));
 		}
 
 		// TODO the following can get each midloc after scrolling down, can

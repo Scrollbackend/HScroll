@@ -18,7 +18,28 @@ public class HSV extends HorizontalScrollView {
 
 	private int position;
 	private ViewHolder touchedViewHolder = new ViewHolder();
-	private ListHorizontalScrollViewAdapter LHSVAdapter = ListHorizontalScrollViewAdapter.getInstance();
+	private String alignMode;
+
+	private enum AlignSetting {
+		NO_ALIGN, ALIGN_TO_RIGHT, ALIGN_TO_BOTH;
+		public static AlignSetting getAlignSetting(String alignMode) {
+//			Log.i(TAG, "valueOf" + valueOf(alignMode));
+			return valueOf(alignMode);
+
+		}
+	};
+	private enum ContinuesScrollSetting {
+		Enable,Disable;
+		public static ContinuesScrollSetting getCSrollSetting(String CScrollMode) {
+//			Log.i(TAG, "valueOf" + valueOf(CScrollMode));
+			return valueOf(CScrollMode);
+
+		}
+	};
+	private String cSrollMode;
+
+	private ListHorizontalScrollViewAdapter LHSVAdapter = ListHorizontalScrollViewAdapter
+			.getInstance();
 
 	// **********TC2***************
 	public void setPosition(int position) {
@@ -38,7 +59,8 @@ public class HSV extends HorizontalScrollView {
 	// this will run
 	public HSV(Context context, AttributeSet attrs) {
 		super(context, attrs);
-
+		this.alignMode = LHSVAdapter.getmAlignMode();
+		this.cSrollMode=LHSVAdapter.getCSrollMode();
 	}
 
 	@Override
@@ -58,7 +80,7 @@ public class HSV extends HorizontalScrollView {
 
 		// **********TC1***************
 		// TODO
-		 LHSVAdapter.setScrollX(position, l);
+		LHSVAdapter.setScrollX(position, l);
 		// Log.i(TAG, "l:" + l + " ol:" + oldl + " P:" + position);
 
 		// getLocationOnScreen and getScrollX both provide accurate result. But
@@ -92,25 +114,38 @@ public class HSV extends HorizontalScrollView {
 			int lowerWidth = touchedViewHolder.hll.getChildAt(i).getWidth();
 			int upperWidth = touchedViewHolder.hll.getChildAt(i + 1).getWidth();
 			// Log.i(TAG, "i "+i);
-
-			// if (0 >= lowerBoundary && 0 < upperBoundary)
-			if (0 >= lowerBoundary && 0 < (lowerBoundary + (lowerWidth / 2))) {
-				// Log.i(TAG, "P"+position+" Lower Boundary " + (lowerBoundary -
-				// refBoundary)
-				// + " Upper Boundary " + (upperBoundary - refBoundary));
-				// TODO
-				 LHSVAdapter
-				 .setBoundaryX(position, lowerBoundary - refBoundary);
-
-				// mainActivity.touchedViewHolder.hll.scrollTo(lowerBoundary-refBoundary,
-				// t);
+			switch (AlignSetting.getAlignSetting(alignMode)) {
+			case NO_ALIGN:
+				LHSVAdapter.setBoundaryX(position, l);
 				break;
-			}
-			if (0 >= (lowerBoundary + (lowerWidth / 2))
-					&& 0 < (upperBoundary + (lowerWidth / 2))) {
-				// TODO
-				 LHSVAdapter
-				 .setBoundaryX(position, upperBoundary - refBoundary);
+			case ALIGN_TO_RIGHT:
+				if (0 >= lowerBoundary && 0 < upperBoundary)
+					LHSVAdapter.setBoundaryX(position, upperBoundary
+							- refBoundary);
+				break;
+			case ALIGN_TO_BOTH:
+				if (0 >= lowerBoundary
+						&& 0 < (lowerBoundary + (lowerWidth / 2))) {
+					// Log.i(TAG, "P"+position+" Lower Boundary " +
+					// (lowerBoundary -
+					// refBoundary)
+					// + " Upper Boundary " + (upperBoundary - refBoundary));
+					// TODO
+					LHSVAdapter.setBoundaryX(position, lowerBoundary
+							- refBoundary);
+
+					// mainActivity.touchedViewHolder.hll.scrollTo(lowerBoundary-refBoundary,
+					// t);
+					Log.i(TAG, "ALIGN_TO_BOTH");
+					break;
+				}
+				if (0 >= (lowerBoundary + (lowerWidth / 2))
+						&& 0 < (upperBoundary + (lowerWidth / 2))) {
+					// TODO
+					LHSVAdapter.setBoundaryX(position, upperBoundary
+							- refBoundary);
+					break;
+				}
 				break;
 			}
 
@@ -123,38 +158,51 @@ public class HSV extends HorizontalScrollView {
 		int[] lastChildLoc = new int[2];
 		touchedViewHolder.hll.getChildAt(childCount - 1).getLocationOnScreen(
 				lastChildLoc);
-		// Log.i(TAG,
-		// "childCount"+mainActivity.touchedViewHolder.hll.getChildCount());
+		 Log.i(TAG,
+		 "childCount"+touchedViewHolder.hll.getChildCount());
 		int lastChildWidth = touchedViewHolder.hll.getChildAt((childCount) - 1)
 				.getWidth();
 		int firstChildWidth = touchedViewHolder.hll.getChildAt(0).getWidth();
 		int HSVWidth = touchedViewHolder.hll.getWidth();
+		int[] midChildLoc = new int[2];
+		touchedViewHolder.hll.getChildAt((childCount/2) - 1).getLocationOnScreen(
+				midChildLoc);
 
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		int screenWidth = dm.widthPixels;
 		// Log.i(TAG,
 		// "l "+l+" ?iseuqalto"+(lastChildWidth+lastChildLoc[0]-HSVWidth));
-		// Log.i(TAG, "l " + l + " lastLeft" + lastChildLoc[0] + " screen "
-		// + HSVWidth + " lv " + lastChildWidth + " screen-width "
-		// + (HSVWidth - lastChildWidth) + "screen width" + screenWidth);
+		 Log.i(TAG, "l " + l + " lastLeft" + lastChildLoc[0] + " HSVWidth "
+		 + HSVWidth + " lv " + lastChildWidth +" \nmidleft "+midChildLoc[0]+" \nscreen-width "
+		 + (HSVWidth - lastChildWidth) + "screenWidth" + screenWidth);
 
 		// Debug
 		touchedViewHolder.hll.getChildAt((childCount) - 1).setBackgroundColor(
 				Color.BLUE);
-		// Log.i(TAG, "screen width" + screenWidth + " difference "
-		// + (HSVWidth - l - lastChildWidth));
+		 Log.i(TAG, "screenWidth" + screenWidth + " difference "
+		 + (HSVWidth - l - lastChildWidth));
 
-		// cause there is align mechanism, if not the elements may jump a little
-		if (position != -1) {
-			if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
-				Log.i(TAG, ">= true");
-				touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
+		// Setting up continues scroll, because there is align mechanism, if not
+		// the elements may jump a little
+		switch (ContinuesScrollSetting.getCSrollSetting(cSrollMode)) {
+		case Disable:
+			
+			break;
+
+		default:
+			if (position != -1) {
+				if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
+					Log.i(TAG, ">= true");
+					touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
+				}
+				if (l <= firstChildWidth) {
+					Log.i(TAG, "<= true");
+					touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
+				}
 			}
-			if (l <= firstChildWidth) {
-				Log.i(TAG, "<= true");
-				touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
-			}
+			break;
 		}
+	
 
 	}
 
