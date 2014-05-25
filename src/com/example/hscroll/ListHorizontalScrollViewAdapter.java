@@ -14,30 +14,39 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-
-
 /**
  * Require following input parameters in this order
- * @param <View> View[],How many lines of item are there in the ListView;
- * @param <View> View[],How many Child per item;
+ * 
+ * @param <View>
+ *            View[],How many lines of item are there in the ListView;
+ * @param <View>
+ *            View[],How many Child per item;
  * @param <Context>
  *            The UI thread context;
  * @param <ListView>
  *            The ListView instance;
  * @param <String>
  *            Choose which mode of the alignment, options are:
- *             <p>NO_ALIGN (No
- *            alignment);</p>
- *            <p>ALIGN_TO_RIGHT (Always align to the next right child);</p>
- *            <p>ALIGN_TO_BOTH (Align to itself if the edge is on the left half of
- *            the child, otherwise to the next right child);</p>
+ *            <p>
+ *            NO_ALIGN (No alignment);
+ *            </p>
+ *            <p>
+ *            ALIGN_TO_RIGHT (Always align to the next right child);
+ *            </p>
+ *            <p>
+ *            ALIGN_TO_BOTH (Align to itself if the edge is on the left half of
+ *            the child, otherwise to the next right child);
+ *            </p>
  * @param <String>
  *            Choose weather enable or disable the continues scrolling, options
- *            are: 
- *            <p>Enable (default enable);</p> 
- *            <p>Disable (No continues scroll);</p>
+ *            are:
+ *            <p>
+ *            Enable (default enable);
+ *            </p>
+ *            <p>
+ *            Disable (No continues scroll);
+ *            </p>
  */
-
 
 public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	// TODO obtain the items number from main input
@@ -56,18 +65,22 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	private Context mContext;
 	private ListView mListView;
 	private String mAlignMode;
+
 	private enum ContinuesScrollSetting {
-		Enable,Disable;
+		Enable, Disable;
 		public static ContinuesScrollSetting getCSrollSetting(String CScrollMode) {
-//			Log.i(TAG, "valueOf" + valueOf(CScrollMode));
+			// Log.i(TAG, "valueOf" + valueOf(CScrollMode));
 			return valueOf(CScrollMode);
 
 		}
 	};
+
 	private String cSrollMode;
 	private static ListHorizontalScrollViewAdapter INSTANCE = null;
 
-	public ListHorizontalScrollViewAdapter(View[] itemViews, View[] innerItemViews, Context context, ListView listView, String alignMode, String cSrollMode) {
+	public ListHorizontalScrollViewAdapter(View[] itemViews,
+			View[] innerItemViews, Context context, ListView listView,
+			String alignMode, String cSrollMode) {
 		INSTANCE = this;
 		this.itemViews = itemViews;
 		this.innerItemViews = innerItemViews;
@@ -86,7 +99,6 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	public String getmAlignMode() {
 		return mAlignMode;
 	}
-	
 
 	public String getCSrollMode() {
 		return cSrollMode;
@@ -230,7 +242,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 				}
 				break;
 			}
-			
+
 			// for (int i = 0; i < innerItemViews.length; i++) {
 			// Button button = new Button(mContext);
 			// button.setText("This is a Button " + (i + 1));
@@ -247,7 +259,6 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 			// after recycle a view, reset the position value in HSV.
 			viewHolder.hsv.setPosition(-1);
-			
 
 			// This can get initial btns' X, but need to redraw views to get
 			// valid data, and each row are slightly different, need a
@@ -263,6 +274,36 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		// Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" +
 		// position);
 
+		// TODO This can work, through it seems render slower, could be better
+		// if the
+		// view is pre-instanced rather than render every-time, try image view
+		// next.
+		// switch (ContinuesScrollSetting.getCSrollSetting(cSrollMode)) {
+		// case Disable:
+		// for (int i = 0; i < innerItemViews.length; i++) {
+		// Button button = new Button(mContext);
+		// button.setText("This is a Button " + (position + 1) + " "
+		// + (i + 1));
+		// viewHolder.hll.addView(button);
+		// }
+		// break;
+		//
+		// default:
+		// for (int i = 0; i < innerItemViews.length; i++) {
+		// Button button = new Button(mContext);
+		// button.setText("This is a Button " + (position + 1) + " "
+		// + (i + 1));
+		// viewHolder.hll.addView(button);
+		// }
+		// for (int i = 0; i < innerItemViews.length; i++) {
+		// Button button = new Button(mContext);
+		// button.setText("This is a Button " + (position + 1) + " "
+		// + (i + 1));
+		// viewHolder.hll.addView(button);
+		// }
+		// break;
+		// }
+
 		// TODO because the view reuse will mess around the order, so the
 		// content of each item children need to set here.This work for the
 		// starting too. Remember the view will carry the state around, the
@@ -272,13 +313,14 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		// [?] If not using listview, a linearview BUT that would not be
 		// dynamic.
 		int childCount = viewHolder.hll.getChildCount();
-		for (int i = 0; i <  (childCount/2)- 1; i++) {
+		for (int i = 0; i < (childCount / 2) - 1; i++) {
 			Button button = (Button) viewHolder.hll.getChildAt(i);
 			button.setText("This is a Button " + (position + 1) + " " + (i + 1));
 		}
-		for (int i = (childCount/2); i <  childCount- 1; i++) {
+		for (int i = (childCount / 2); i < childCount - 1; i++) {
 			Button button = (Button) viewHolder.hll.getChildAt(i);
-			button.setText("This is a Button " + (position + 1) + " " + (i-((childCount)/2)+1));
+			button.setText("This is a Button " + (position + 1) + " "
+					+ (i - ((childCount) / 2) + 1));
 		}
 
 		// TODO the following can get each midloc after scrolling down, can
