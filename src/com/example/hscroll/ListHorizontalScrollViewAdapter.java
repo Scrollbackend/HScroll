@@ -76,11 +76,13 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	};
 
 	private String cSrollMode;
+	// Set up singleton mode to allow HSV use method in this activity
 	private static ListHorizontalScrollViewAdapter INSTANCE = null;
 
 	public ListHorizontalScrollViewAdapter(View[] itemViews,
 			View[] innerItemViews, Context context, ListView listView,
 			String alignMode, String cSrollMode) {
+		// set Singleton return instance
 		INSTANCE = this;
 		this.itemViews = itemViews;
 		this.innerItemViews = innerItemViews;
@@ -92,6 +94,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		iniBoundaryList();
 	}
 
+	// public method enable other to call, singleton mode
 	public static ListHorizontalScrollViewAdapter getInstance() {
 		return INSTANCE;
 	}
@@ -123,6 +126,11 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		return position;
 	}
 
+	// TODO if the continues scroll to left is needed at start, in theory the
+	// midChild left can be calculated and set to the ArrayList beforehand,
+	// Through this require more work especially when the child number in each
+	// item is different, as that child width and number need input. Unless
+	// there is a way that get midChild left onPreDraw.
 	public ArrayList<Integer> iniScrollXList() {
 		scrollXList = new ArrayList<Integer>();
 		for (int i = 0; i < itemViews.length + 1; i++) {
@@ -243,17 +251,6 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 				break;
 			}
 
-			// for (int i = 0; i < innerItemViews.length; i++) {
-			// Button button = new Button(mContext);
-			// button.setText("This is a Button " + (i + 1));
-			// viewHolder.hll.addView(button);
-			// }
-			// for (int i = 0; i < innerItemViews.length; i++) {
-			// Button button = new Button(mContext);
-			// button.setText("This is a Button " + (i + 1));
-			// viewHolder.hll.addView(button);
-			// }
-
 		} else {
 			// reuse created view
 			viewHolder = (ViewHolder) convertView.getTag();
@@ -269,10 +266,10 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		// When the view is recycled, the state of the view will be
 		// preserved, as the view is reused, the previous state will be
 		// restored.
+		// [?]Why this scrollTo not working, it did be called at start.
 		// Log.i(TAG, "Array" + Arrays.asList(scrollXList).toString());
 		convertView.scrollTo(getScrollX(position), 0);
-		// Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" +
-		// position);
+		Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" + position);
 
 		// TODO This can work, through it seems render slower, could be better
 		// if the
@@ -354,14 +351,14 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					// TODO
 					new GetFinalXTask().execute(position, v);
-					Log.i(TAG,
-							"onTouchViewHolder"
-									+ touchedViewHolder.hsv
-											.getTag()
-											.toString()
-											.replace(
-													"com.example.hscroll.MainActivity$ViewHolder",
-													""));
+//					Log.i(TAG,
+//							"onTouchViewHolder"
+//									+ touchedViewHolder.hsv
+//											.getTag()
+//											.toString()
+//											.replace(
+//													"com.example.hscroll.MainActivity$ViewHolder",
+//													""));
 				}
 
 				touchedViewHolder.hsv.onTouchEvent(event);
