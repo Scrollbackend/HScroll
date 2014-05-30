@@ -1,8 +1,14 @@
 package com.example.hscroll;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
@@ -13,6 +19,14 @@ public class MainActivity extends Activity {
 	private View[] itemViews = new View[100];
 	private View[] innerItemViews = new View[10];
 
+//	private ArrayList<View> listItems;
+
+//	public ArrayList<View> addItems(View item) {
+//		listItems = new ArrayList<View>();
+//		listItems.add(item);
+//		return listItems;
+//	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -22,6 +36,17 @@ public class MainActivity extends Activity {
 				innerItemViews, getApplicationContext(), listView,
 				"ALIGN_TO_BOTH", "Enable");
 		listView.setAdapter(myAdapter);
+		
+		
+//		addItems(inibuts());
 	}
 
+//	private View inibuts() {
+//		LinearLayout layout = (LinearLayout) findViewById(R.id.hlinear);
+//		for (int i = 0; i < innerItemViews.length; i++) {
+//			Button button = new Button(this);
+//			layout.addView(button);
+//		}
+//		return layout;
+//	}
 }

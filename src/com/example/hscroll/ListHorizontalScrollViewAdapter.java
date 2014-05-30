@@ -31,11 +31,11 @@ import android.widget.ListView;
  *            NO_ALIGN (No alignment);
  *            </p>
  *            <p>
- *            ALIGN_TO_RIGHT (Always align to the next right child);
+ *            ALIGN_TO_RIGHT (Always align to the next child to the right);
  *            </p>
  *            <p>
  *            ALIGN_TO_BOTH (Align to itself if the edge is on the left half of
- *            the child, otherwise to the next right child);
+ *            the child, otherwise to the next child to the right);
  *            </p>
  * @param <String>
  *            Choose weather enable or disable the continues scrolling, options
@@ -49,7 +49,6 @@ import android.widget.ListView;
  */
 
 public class ListHorizontalScrollViewAdapter extends BaseAdapter {
-	// TODO obtain the items number from main input
 	private View[] itemViews;
 	private View[] innerItemViews;
 	private static final String TAG = "hscroll MyAdapter";
@@ -109,21 +108,6 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 
 	public int getItemViewsLength() {
 		return itemViews.length;
-	}
-
-	@Override
-	public int getCount() {
-		return itemViews.length;
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return itemViews[position];
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
 	}
 
 	// TODO if the continues scroll to left is needed at start, in theory the
@@ -208,6 +192,31 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		mVisiblePosition = positions;
 		// Log.i(TAG, "Contain"+Arrays.asList(positions).contains(firstP));
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public int getCount() {
+		return itemViews.length;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return itemViews[position];
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
