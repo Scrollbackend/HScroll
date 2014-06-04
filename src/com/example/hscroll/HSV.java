@@ -93,7 +93,7 @@ public class HSV extends HorizontalScrollView {
 		// childCount -1 or will exceed, remember the last digit of i never
 		// reach in for loop.
 		for (int i = 0; i < childCount - 1; i++) {
-			// TODO separate the getLocationOnScreen method, return a int
+			// FIXME separate the getLocationOnScreen method, return a int
 			int[] locationLow = new int[2];
 			int[] locationUpper = new int[2];
 			int[] locationRef = new int[2];
@@ -114,16 +114,20 @@ public class HSV extends HorizontalScrollView {
 			int lowerWidth = touchedViewHolder.hll.getChildAt(i).getWidth();
 			int upperWidth = touchedViewHolder.hll.getChildAt(i + 1).getWidth();
 			// Log.i(TAG, "i "+i);
+			
+//			Control the aligning mode 
 			switch (AlignSetting.getAlignSetting(alignMode)) {
 			case NO_ALIGN:
 				LHSVAdapter.setBoundaryX(position, l);
 				break;
 			case ALIGN_TO_RIGHT:
+//				Only align to the right
 				if (0 >= lowerBoundary && 0 < upperBoundary)
 					LHSVAdapter.setBoundaryX(position, upperBoundary
 							- refBoundary);
 				break;
 			case ALIGN_TO_BOTH:
+//				Align to itself when the edge is on the left half of child
 				if (0 >= lowerBoundary
 						&& 0 < (lowerBoundary + (lowerWidth / 2))) {
 					// Log.i(TAG, "P"+position+" Lower Boundary " +
@@ -139,6 +143,7 @@ public class HSV extends HorizontalScrollView {
 					Log.i(TAG, "ALIGN_TO_BOTH");
 					break;
 				}
+//				Align to right when the edge is on the right half of child
 				if (0 >= (lowerBoundary + (lowerWidth / 2))
 						&& 0 < (upperBoundary + (lowerWidth / 2))) {
 					// TODO
