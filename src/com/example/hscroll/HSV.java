@@ -13,7 +13,7 @@ import android.widget.HorizontalScrollView;
 //scrollX will store correctly.
 //It is been created many instances while convertView == null
 public class HSV extends HorizontalScrollView {
-	private static final String TAG = "hscroll";
+	private static final String TAG = "hscroll HSV";
 	// private MainActivity mainActivity = MainActivity.getInstance();
 
 	private int position;
@@ -37,7 +37,7 @@ public class HSV extends HorizontalScrollView {
 		}
 	};
 	private String cSrollMode;
-
+//FIXME Using other means to exchange data between HSV and ListHorizontalScrollViewAdapter.
 	private ListHorizontalScrollViewAdapter LHSVAdapter = ListHorizontalScrollViewAdapter
 			.getInstance();
 
@@ -196,10 +196,12 @@ public class HSV extends HorizontalScrollView {
 
 		default:
 			if (position != -1) {
+//				When scroll to the last child
 				if (screenWidth >= (HSVWidth - l - lastChildWidth)) {
 					Log.i(TAG, ">= true");
 					touchedViewHolder.hsv.scrollBy(-(HSVWidth / 2), 0);
 				}
+//				When scroll to the first child
 				if (l <= firstChildWidth) {
 					Log.i(TAG, "<= true");
 					touchedViewHolder.hsv.scrollBy((HSVWidth / 2), 0);
@@ -210,5 +212,6 @@ public class HSV extends HorizontalScrollView {
 	
 
 	}
+
 
 }

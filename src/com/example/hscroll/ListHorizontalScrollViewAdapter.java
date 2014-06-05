@@ -126,8 +126,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 
 	public int getScrollX(int position) {
 		int scrollX = scrollXList.get(position + 1);
-		// Log.i(TAG, "MgetScrollX" +
-		// Arrays.asList(scrollXList).toString());
+		Log.i(TAG, "MgetScrollX" + Arrays.asList(scrollXList).toString());
 		return scrollX;
 	}
 
@@ -148,7 +147,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		if (Arrays.asList(mVisiblePosition).contains(position)) {
 			scrollXList.set(position + 1, scrollX);
 			// Log.i(TAG, "MSetS" + " P " + position + " X " + scrollX);
-
+			Log.i(TAG, "MsetScrollX" + Arrays.asList(scrollXList).toString());
 		}
 	}
 
@@ -175,8 +174,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	public void setBoundaryX(int position, int lowerBoundary) {
 
 		BoundaryList.set(position + 1, lowerBoundary);
-		// Log.i(TAG, "setBoundaryList"
-		// + Arrays.asList(BoundaryList).toString());
+		Log.i(TAG, "setBoundaryList" + Arrays.asList(BoundaryList).toString());
 
 	}
 
@@ -192,15 +190,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		mVisiblePosition = positions;
 		// Log.i(TAG, "Contain"+Arrays.asList(positions).contains(firstP));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	@Override
 	public int getCount() {
 		return itemViews.length;
@@ -215,8 +205,6 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
-
-
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
@@ -276,6 +264,8 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		// preserved, as the view is reused, the previous state will be
 		// restored.
 		// [?]Why this scrollTo not working, it did be called at start.
+		// FIXME Sometimes the scrollTO will not reach the defined location
+		// after intense scroll up%down.
 		// Log.i(TAG, "Array" + Arrays.asList(scrollXList).toString());
 		convertView.scrollTo(getScrollX(position), 0);
 		Log.i(TAG, "getViewscrollTo" + getScrollX(position) + " P" + position);
@@ -322,11 +312,16 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 		for (int i = 0; i < (childCount / 2) - 1; i++) {
 			Button button = (Button) viewHolder.hll.getChildAt(i);
 			button.setText("This is a Button " + (position + 1) + " " + (i + 1));
+			// The blank effect when hold down on a button is Clickable, and
+			// triggered the default click_down_effect, [?]its white since the
+			// button is dark.
+			button.setClickable(false);
 		}
 		for (int i = (childCount / 2); i < childCount - 1; i++) {
 			Button button = (Button) viewHolder.hll.getChildAt(i);
 			button.setText("This is a Button " + (position + 1) + " "
 					+ (i - ((childCount) / 2) + 1));
+			button.setClickable(false);
 		}
 
 		// TODO the following can get each midloc after scrolling down, can
@@ -360,14 +355,31 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					// TODO
 					new GetFinalXTask().execute(position, v);
-//					Log.i(TAG,
-//							"onTouchViewHolder"
-//									+ touchedViewHolder.hsv
-//											.getTag()
-//											.toString()
-//											.replace(
-//													"com.example.hscroll.MainActivity$ViewHolder",
-//													""));
+					// Log.i(TAG,
+					// "onTouchViewHolder"
+					// + touchedViewHolder.hsv
+					// .getTag()
+					// .toString()
+					// .replace(
+					// "com.example.hscroll.MainActivity$ViewHolder",
+					// ""));
+				}
+				// This enable the continues scroll to left at beginning
+				switch (ContinuesScrollSetting.getCSrollSetting(cSrollMode)) {
+				case Disable:
+
+					break;
+
+				default:
+					if (event.getAction() == MotionEvent.ACTION_MOVE) {
+						// Because the HSV will never at 0 after any scroll
+						if (getScrollX(position) == 0) {
+							touchedViewHolder.hsv.scrollBy(1, 0);
+						}
+						Log.i(TAG,
+								"*********************************\nMoved 1 pixel");
+					}
+					break;
 				}
 
 				touchedViewHolder.hsv.onTouchEvent(event);
