@@ -32,7 +32,11 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		listView = (ListView) findViewById(R.id.listview_main);
-		myAdapter = new ListHorizontalScrollViewAdapter(itemViews,
+//		myAdapter = new ListHorizontalScrollViewAdapter(itemViews,
+//				innerItemViews, getApplicationContext(), listView,
+//				"ALIGN_TO_BOTH", "Enable");
+//		listView.setAdapter(myAdapter);
+		myAdapter = new MyAdapter(itemViews,
 				innerItemViews, getApplicationContext(), listView,
 				"ALIGN_TO_BOTH", "Enable");
 		listView.setAdapter(myAdapter);

@@ -61,7 +61,7 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 	// return wrong result.
 	private Integer[] mVisiblePosition;
 	ViewHolder touchedViewHolder;
-	private Context mContext;
+	protected Context mContext;
 	private ListView mListView;
 	private String mAlignMode;
 
@@ -233,17 +233,19 @@ public class ListHorizontalScrollViewAdapter extends BaseAdapter {
 				break;
 
 			default:
+				for (int j= 0;j<1;j++){
 				for (int i = 0; i < innerItemViews.length; i++) {
 					Button button = new Button(mContext);
 					button.setText("This is a Button " + (position + 1) + " "
 							+ (i + 1));
 					viewHolder.hll.addView(button);
 				}
-				for (int i = 0; i < innerItemViews.length; i++) {
-					Button button = new Button(mContext);
-					button.setText("This is a Button " + (position + 1) + " "
-							+ (i + 1));
-					viewHolder.hll.addView(button);
+//				for (int i = 0; i < innerItemViews.length; i++) {
+//					Button button = new Button(mContext);
+//					button.setText("This is a Button " + (position + 1) + " "
+//							+ (i + 1));
+//					viewHolder.hll.addView(button);
+//				}
 				}
 				break;
 			}
